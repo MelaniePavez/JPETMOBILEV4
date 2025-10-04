@@ -1,0 +1,121 @@
+.login-page { 
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-card { 
+  background: rgb(180, 180, 219);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+  margin-top: 40%;
+
+  /* Animación de entrada */
+  animation: slideUpFade 1s ease forwards;
+  opacity: 0;
+}
+
+@keyframes slideUpFade {
+  0% {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.login-title {
+  font-size: 1.8rem;
+  text-align: center;
+  color: black;
+}
+
+.input-item {
+  --background: transparent;
+  --placeholder-color: #ff8a00;
+}
+
+.input-item ion-label {
+  color: darkblue;
+}
+
+.input-item ion-input {
+  color: #333;
+}
+
+.login-button {
+  --background: darkblue;
+  --border-radius: 8px;
+  margin-top: 15px;
+}
+
+.register-button {
+  --color: #000000; /* texto negro */
+  --background: transparent; /* sin fondo */
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+.forgot-password {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.forgot-password a {
+  color: rgb(0, 0, 0);
+  text-decoration: underline;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 400px;
+  height: auto;
+  /* Rebote inicial + respiración fade */
+  animation: bounceIn 1s ease, fadeInOut 4s ease-in-out infinite;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Hover animado en botones */
+ion-button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+ion-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}

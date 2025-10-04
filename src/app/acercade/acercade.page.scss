@@ -1,0 +1,13 @@
+.about-image {
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  display: block;
+  animation: pulse 3s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
