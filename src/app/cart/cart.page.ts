@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CartService } from '../services/cart.service';
 import { Product } from '../models/product.model';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-cart',
@@ -14,40 +14,52 @@ export class CartPage implements OnInit {
 
   constructor(
     private cartService: CartService,
-    private alertController: AlertController
-  ) { }
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
     this.cartItems = this.cartService.getCart();
   }
 
-  increaseCartItem(product: Product) {
+  increaseProduct(product: Product) {
     this.cartService.addProduct(product);
   }
 
-  decreaseCartItem(product: Product) {
+  decreaseProduct(product: Product) {
     this.cartService.decreaseProduct(product);
   }
 
   removeFromCart(product: Product) {
     this.cartService.removeProduct(product);
+    this.presentToast(`${product.nombre} eliminado del carrito 🗑️`);
   }
 
-  getTotal() {
+  getTotal(): number {
     return this.cartItems.reduce((total, item) => total + (item.precio * (item.cantidad || 0)), 0);
   }
 
+  clearCart() {
+    this.cartItems = this.cartService.clearCart();
+  }
+
   async checkout() {
-    const alert = await this.alertController.create({
-      header: '¡Gracias por tu compra!',
-      message: `El total de tu compra es $${this.getTotal().toLocaleString('es-CL')}`,
-      buttons: ['OK']
-    });
+    if (this.cartItems.length === 0) {
+      this.presentToast('Tu carrito está vacío 🛒');
+      return;
+    }
 
-    await alert.present();
+    // Aquí podrías integrar pago o resumen de compra
+    this.presentToast('Compra procesada correctamente ✅');
+    this.clearCart();
+  }
 
-    alert.onDidDismiss().then(() => {
-      this.cartItems = this.cartService.clearCart();
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 1500,
+      position: 'bottom',
+      color: 'primary'
     });
+    toast.present();
   }
 }

@@ -6,17 +6,11 @@ import { Product } from '../models/product.model';
   providedIn: 'root'
 })
 export class CartService {
+
   private cart: Product[] = [];
   private cartItemCount = new BehaviorSubject<number>(0);
 
-  constructor() {
-    // Carga el carrito desde localStorage al iniciar el servicio
-    const storedCart = localStorage.getItem('my_cart');
-    if (storedCart) {
-      this.cart = JSON.parse(storedCart);
-      this.updateCartCount();
-    }
-  }
+  constructor() {}
 
   getCart() {
     return this.cart;
@@ -27,54 +21,37 @@ export class CartService {
   }
 
   addProduct(product: Product) {
-    let added = false;
-    for (let p of this.cart) {
-      if (p.nombre === product.nombre) {
-        p.cantidad = (p.cantidad || 0) + 1;
-        added = true;
-        break;
-      }
+    // Busca si ya está en el carrito
+    const item = this.cart.find(p => p.nombre === product.nombre);
+    if (item) {
+      item.cantidad = (item.cantidad || 1) + 1;
+    } else {
+      this.cart.push({ ...product, cantidad: 1 });
     }
-    if (!added) {
-      product.cantidad = 1;
-      this.cart.push(product);
-    }
-    this.saveCart();
+    this.cartItemCount.next(this.cart.reduce((total, p) => total + (p.cantidad || 0), 0));
   }
 
   decreaseProduct(product: Product) {
-    for (let [index, p] of this.cart.entries()) {
-      if (p.nombre === product.nombre) {
-        p.cantidad = (p.cantidad || 0) - 1;
-        if (p.cantidad === 0) {
-          this.cart.splice(index, 1);
-        }
+    const index = this.cart.findIndex(p => p.nombre === product.nombre);
+    if (index > -1) {
+      const item = this.cart[index];
+      if (item.cantidad && item.cantidad > 1) {
+        item.cantidad--;
+      } else {
+        this.cart.splice(index, 1);
       }
+      this.cartItemCount.next(this.cart.reduce((total, p) => total + (p.cantidad || 0), 0));
     }
-    this.saveCart();
   }
 
   removeProduct(product: Product) {
-    const index = this.cart.findIndex(p => p.nombre === product.nombre);
-    if (index > -1) {
-      this.cart.splice(index, 1);
-      this.saveCart();
-    }
+    this.cart = this.cart.filter(p => p.nombre !== product.nombre);
+    this.cartItemCount.next(this.cart.reduce((total, p) => total + (p.cantidad || 0), 0));
   }
 
-  clearCart() {
+  clearCart(): Product[] {
     this.cart = [];
-    this.saveCart();
+    this.cartItemCount.next(0);
     return this.cart;
-  }
-
-  private updateCartCount() {
-    const totalItems = this.cart.reduce((sum, p) => sum + (p.cantidad || 0), 0);
-    this.cartItemCount.next(totalItems);
-  }
-
-  private saveCart() {
-    localStorage.setItem('my_cart', JSON.stringify(this.cart));
-    this.updateCartCount();
   }
 }

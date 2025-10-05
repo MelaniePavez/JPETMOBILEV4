@@ -2,5 +2,6 @@ export interface Product {
   nombre: string;
   precio: number;
   descripcion: string;
-  cantidad?: number; // La '?' hace que la propiedad sea opcional
+  imagen?: string;
+  cantidad?: number; // ✅ cantidad en el carrito (opcional)
 }
