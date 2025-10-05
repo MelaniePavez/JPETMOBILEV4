@@ -39,6 +39,10 @@ const routes: Routes = [
     path: 'cancel',
     loadChildren: () => import('./cancel/cancel.module').then( m => m.CancelPageModule)
   },
+  {
+    path: 'perfil',
+    loadChildren: () => import('./perfil/perfil.module').then( m => m.PerfilPageModule)
+  },
 ];
 
 @NgModule({

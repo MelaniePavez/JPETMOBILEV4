@@ -7,19 +7,24 @@ import { MenuController, NavController } from '@ionic/angular';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+  public appPages = [
+    { title: 'Home', url: '/home', icon: 'home' },
+    { title: 'Productos', url: '/productos', icon: 'storefront' },
+    { title: 'Mi Perfil', url: '/perfil', icon: 'person-circle' },
+    { title: 'Acerca de', url: '/acerca', icon: 'information-circle' }, // <-- LÍNEA CORREGIDA
+  ];
+
   constructor(
     private menu: MenuController,
     private navCtrl: NavController
   ) {}
 
-  // Cambia el nombre a cerrarMenu (sin tilde) para coincidir con el template
   cerrarMenu() {
     this.menu.close('mainMenu');
   }
 
   async cerrarSesion() {
-    await this.cerrarMenu(); // Usamos el mismo método para cerrar el menú
+    await this.cerrarMenu();
     this.navCtrl.navigateRoot('/login');
-    // Aquí puedes añadir lógica adicional como limpiar storage, etc.
   }
 }
