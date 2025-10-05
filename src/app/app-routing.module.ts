@@ -27,6 +27,10 @@ const routes: Routes = [
     path: 'acerca', // Cambiado de 'acercade' a 'acerca' para coincidir con tu menú
     loadChildren: () => import('./acercade/acercade.module').then(m => m.AcercadePageModule)
   },
+  {
+    path: 'cart',
+    loadChildren: () => import('./cart/cart.module').then( m => m.CartPageModule)
+  },
 ];
 
 @NgModule({

@@ -4,13 +4,14 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>J-PET Mobile</ion-title>
-    
     <ion-buttons slot="end">
       <ion-button routerLink="/cart">
+        <ion-badge color="danger" *ngIf="cartItemCount | async as count" [hidden]="count === 0">
+          {{ count }}
+        </ion-badge>
         <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
@@ -34,7 +35,6 @@
         <h2>{{producto.nombre}}</h2>
         <p>${{producto.precio | number:'1.2-2'}}</p>
       </ion-label>
-      
       <ion-button slot="end" (click)="addToCart(producto)">
         <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
       </ion-button>

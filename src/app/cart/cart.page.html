@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/productos"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mi Carrito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="cartItems.length === 0" class="ion-text-center">
+    <h3>Tu carrito está vacío</h3>
+    <ion-button routerLink="/productos" class="ion-margin-top">
+      Ver productos
+    </ion-button>
+  </div>
+
+  <div *ngIf="cartItems.length > 0">
+    <ion-list>
+      <ion-item *ngFor="let item of cartItems">
+        <ion-label>
+          <h2>{{ item.nombre }}</h2>
+          <p>Precio: ${{ item.precio | number:'1.0-0' }}</p>
+        </ion-label>
+        <div slot="end" class="quantity-controls">
+          <ion-button fill="clear" (click)="decreaseCartItem(item)">
+            <ion-icon name="remove-circle-outline"></ion-icon>
+          </ion-button>
+          <span>{{ item.cantidad }}</span>
+          <ion-button fill="clear" (click)="increaseCartItem(item)">
+            <ion-icon name="add-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" color="danger" (click)="removeFromCart(item)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-item>
+    </ion-list>
+
+    <ion-grid class="ion-margin-top">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="6">
+          <h3>Total:</h3>
+        </ion-col>
+        <ion-col size="6" class="ion-text-end">
+          <h3 color="primary">${{ getTotal() | number:'1.0-0' }}</h3>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-button expand="block" (click)="checkout()" class="ion-margin-top">Proceder al Pago</ion-button>
+  </div>
+</ion-content>
