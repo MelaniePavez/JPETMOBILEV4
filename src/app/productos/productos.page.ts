@@ -3,6 +3,8 @@ import { AlertController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { CartService } from '../services/cart.service';
 import { FirebaseService } from '../services/firebase.service';
+import { AuthService } from '../services/auth.service';
+import { PaymentService } from '../services/payment.service';
 import { Product } from '../models/product.model';
 
 @Component({
@@ -12,27 +14,35 @@ import { Product } from '../models/product.model';
 })
 export class ProductosPage implements OnInit {
 
-  email: string = 'usuario@ejemplo.com';
-  productos: Product[] = []; // Inicialmente vacío, se llenará desde Firebase
+  email: string = '';
+  productos: Product[] = []; // Se llenará desde Firebase
   cartItemCount!: Observable<number>;
 
   constructor(
     private alertController: AlertController,
     private toastController: ToastController,
     private firebaseService: FirebaseService,
-    private cartService: CartService
+    private cartService: CartService,
+    private authService: AuthService,
+    private paymentService: PaymentService
   ) {}
 
   async ngOnInit() {
-    // 1️⃣ Carga inicial de productos desde Firebase
+    // 1️⃣ Obtener usuario logueado de Firebase Auth
+    const user = this.authService.getCurrentUser();
+    if (user && user.email) {
+      this.email = user.email;
+    }
+
+    // 2️⃣ Cargar productos iniciales desde Firebase
     this.productos = await this.firebaseService.getProducts();
 
-    // 2️⃣ Escucha en tiempo real si se modifican los productos en Firebase
+    // 3️⃣ Escuchar cambios en tiempo real de los productos
     this.firebaseService.onProductsChanged(products => {
       this.productos = products;
     });
 
-    // 3️⃣ Obtener cantidad de items en carrito
+    // 4️⃣ Obtener cantidad de items en el carrito
     this.cartItemCount = this.cartService.getCartItemCount();
   }
 
@@ -50,10 +60,28 @@ export class ProductosPage implements OnInit {
     await alert.present();
   }
 
-  // Agregar al carrito
+  // Agregar producto al carrito
   addToCart(producto: Product) {
     this.cartService.addProduct(producto);
     this.presentToast(`${producto.nombre} agregado al carrito 🛒`);
+  }
+
+  // Pagar un producto usando Stripe
+  async pagarProducto(producto: Product) {
+    try {
+      // Stripe requiere el monto en centavos
+      const amount = producto.precio * 100;
+
+      // Llamar a la función de Firebase para crear sesión de pago
+      const url = await this.paymentService.createCheckoutSession(amount, producto.nombre);
+
+      // Redirigir al usuario al checkout de Stripe
+      window.location.href = url;
+
+    } catch (error) {
+      console.error('Error al crear sesión de pago:', error);
+      this.presentToast('No se pudo iniciar el pago. Intenta nuevamente.');
+    }
   }
 
   // Mostrar toast de confirmación

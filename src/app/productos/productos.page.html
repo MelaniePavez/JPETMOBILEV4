@@ -33,7 +33,6 @@
       <ion-label>Productos Disponibles</ion-label>
     </ion-list-header>
 
-    <!-- ✅ Aquí agregamos las imágenes -->
     <ion-item *ngFor="let producto of productos">
       <ion-thumbnail slot="start">
         <img [src]="producto.imagen" alt="{{ producto.nombre }}" />
@@ -45,8 +44,14 @@
         <strong>${{ producto.precio | number:'1.0-0' }}</strong>
       </ion-label>
 
+      <!-- Botón agregar al carrito -->
       <ion-button slot="end" fill="outline" color="primary" (click)="addToCart(producto)">
         <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+
+      <!-- Botón pagar directamente con Stripe -->
+      <ion-button slot="end" color="success" (click)="pagarProducto(producto)">
+        Pagar
       </ion-button>
     </ion-item>
   </ion-list>

@@ -33,10 +33,23 @@ export class RegisterPage {
   }
 
   async register() {
-    if (!this.email) { this.mostrarAlerta('El correo no puede estar vacío'); return; }
-    if (!this.validarEmail(this.email)) { this.mostrarAlerta('Formato de correo inválido'); return; }
-    if (!this.password) { this.mostrarAlerta('La contraseña no puede estar vacía'); return; }
-    if (this.password.length > 4) { this.mostrarAlerta('La contraseña no puede tener más de 4 caracteres'); return; }
+    // Validaciones locales
+    if (!this.email) { 
+      this.mostrarAlerta('El correo no puede estar vacío'); 
+      return; 
+    }
+    if (!this.validarEmail(this.email)) { 
+      this.mostrarAlerta('Formato de correo inválido'); 
+      return; 
+    }
+    if (!this.password) { 
+      this.mostrarAlerta('La contraseña no puede estar vacía'); 
+      return; 
+    }
+    if (this.password.length < 6) { 
+      this.mostrarAlerta('La contraseña debe tener al menos 6 caracteres'); 
+      return; 
+    }
 
     try {
       await this.authService.register(this.email, this.password);
