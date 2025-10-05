@@ -3,11 +3,11 @@ import { NavController, ToastController, AlertController } from '@ionic/angular'
 import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-register',
+  templateUrl: './register.page.html',
+  styleUrls: ['./register.page.scss'],
 })
-export class LoginPage {
+export class RegisterPage {
   email: string = '';
   password: string = '';
 
@@ -18,7 +18,6 @@ export class LoginPage {
     private alertController: AlertController
   ) {}
 
-  // Validar email
   validarEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -33,39 +32,26 @@ export class LoginPage {
     await alert.present();
   }
 
-  async login() {
-    // Validaciones locales
-    if (!this.email) { 
-      this.mostrarAlerta('El campo de correo no puede estar vacío.'); 
-      return; 
-    }
-    if (!this.validarEmail(this.email)) { 
-      this.mostrarAlerta('El formato del correo es inválido.'); 
-      return; 
-    }
-    if (!this.password) { 
-      this.mostrarAlerta('El campo de contraseña no puede estar vacío.'); 
-      return; 
-    }
-    if (this.password.length < 6) { 
-      this.mostrarAlerta('La contraseña debe tener al menos 6 caracteres.'); 
-      return; 
-    }
+  async register() {
+    if (!this.email) { this.mostrarAlerta('El correo no puede estar vacío'); return; }
+    if (!this.validarEmail(this.email)) { this.mostrarAlerta('Formato de correo inválido'); return; }
+    if (!this.password) { this.mostrarAlerta('La contraseña no puede estar vacía'); return; }
+    if (this.password.length > 4) { this.mostrarAlerta('La contraseña no puede tener más de 4 caracteres'); return; }
 
     try {
-      await this.authService.login(this.email, this.password);
+      await this.authService.register(this.email, this.password);
       const toast = await this.toastController.create({
-        message: 'Login exitoso ✅',
+        message: 'Registro exitoso ✅',
         duration: 1500,
         position: 'bottom',
         color: 'success'
       });
       toast.present();
 
-      // Navegar a productos
-      this.navCtrl.navigateRoot('/productos');
+      // Redirige al login
+      this.navCtrl.navigateRoot('/login');
     } catch (error: any) {
-      this.mostrarAlerta(`Error al iniciar sesión: ${error.message}`);
+      this.mostrarAlerta(`Error de registro: ${error.message}`);
     }
   }
 }
